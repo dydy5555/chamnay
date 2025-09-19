@@ -1,0 +1,10 @@
+import HomePage from "@/components/dashboard/HomePage";
+import React from "react";
+
+export default function Home() {
+  return (
+    <>
+      <HomePage />
+    </>
+  );
+}
