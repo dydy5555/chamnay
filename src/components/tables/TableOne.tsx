@@ -1,178 +1,141 @@
+"use client";
+import React from "react";
 import {
-  getKeyValue,
   Table,
-  TableBody,
-  TableCell,
-  TableColumn,
   TableHeader,
+  TableColumn,
+  TableBody,
   TableRow,
+  TableCell,
+  Chip,
+  User,
 } from "@heroui/react";
-import Image from "next/image";
-import TotalCard from "../cards/TotalCard";
-
-const brandData = [
-  {
-    logo: "/images/materail/desktop.svg",
-    name: "Desktop (CPU)",
-    visitors: 3.5,
-    revenues: "68",
-    sales: 590,
-    conversion: "Desktop=37, Clone=25",
-  },
-  {
-    logo: "/images/materail/laptop.svg",
-    name: "Laptop",
-    visitors: 2.2,
-    revenues: "35",
-    sales: 467,
-    conversion: "",
-  },
-  {
-    logo: "/images/materail/monitor.svg",
-    name: "Monitor",
-    visitors: 2.1,
-    revenues: "90",
-    sales: 420,
-    conversion: "Size:17inch=3, 19inch=5, 20inch=37, 21.5inch=101",
-  },
-  {
-    logo: "/images/materail/ups.svg",
-    name: "UPS",
-    visitors: 1.5,
-    revenues: "80",
-    sales: 389,
-    conversion: "UPS: Old=63, Old-650VA=3, New-650VA=9",
-  },
-  {
-    logo: "/images/materail/imac.svg",
-    name: "iMac",
-    visitors: 3.5,
-    revenues: "212",
-    sales: 390,
-    conversion: "Size: (27-inch=2), (21.5-inch=10)",
-  },
-  {
-    logo: "/images/materail/korean-phone.svg",
-    name: "Korea-Black phone",
-    visitors: 3.5,
-    revenues: "88",
-    sales: 390,
-    conversion: "",
-  },
-  {
-    logo: "/images/materail/Camintel-ip-phone.svg",
-    name: "Camintel-ip-phone",
-    visitors: 32,
-    revenues: "100",
-    sales: 390,
-    conversion: "",
-  },
-];
 
 const TableOne = () => {
-  const rows = [
-    {
-      key: "1",
-      expenses: "Tony Reichert",
-      amountRiel: 25656,
-      amountUS: 25656,
-      remark: "Active",
-    },
-    {
-      key: "2",
-      expenses: "Zoey Lang",
-      amountRiel: 1086563,
-      amountUS: 25656,
-      remark: "Paused",
-    },
-    {
-      key: "3",
-      expenses: "Jane Fisher",
-      amountRiel: 1232435,
-      amountUS: 25656,
-      remark: "Active",
-    },
-    {
-      key: "4",
-      expenses: "William Howard",
-      amountRiel: 546423,
-      amountUS: 25656,
-      remark: "Vacation",
-    },
-  ];
-
   const columns = [
+    { name: "EXPENSE", uid: "expense" },
+    { name: "CATEGORY", uid: "category" },
+    { name: "AMOUNT ($)", uid: "amountUsd" },
+    { name: "AMOUNT (៛)", uid: "amountRiel" },
+    { name: "DATE", uid: "date" },
+  ];
+
+  const transactions = [
     {
-      key: "key",
-      label: "",
+      id: 1,
+      name: "Starbucks Coffee",
+      category: "Food & Drink",
+      amountUsd: 4.50,
+      amountRiel: 18000,
+      date: "Oct 24, 2023",
+      avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
     },
     {
-      key: "expenses",
-      label: "EXPENSES",
+      id: 2,
+      name: "Grab Ride",
+      category: "Transport",
+      amountUsd: 2.25,
+      amountRiel: 9000,
+      date: "Oct 24, 2023",
+      avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
     },
     {
-      key: "amountUS",
-      label: "AMOUNT USA",
+      id: 3,
+      name: "Lucky Supermarket",
+      category: "Shopping",
+      amountUsd: 15.80,
+      amountRiel: 63200,
+      date: "Oct 23, 2023",
+      avatar: "https://i.pravatar.cc/150?u=a04258114e29026702d",
     },
     {
-      key: "amountRiel",
-      label: "AMOUNT RIEL",
-    },
-    {
-      key: "remark",
-      label: "REMARK",
+      id: 4,
+      name: "Electricity Bill",
+      category: "Utilities",
+      amountUsd: 45.00,
+      amountRiel: 180000,
+      date: "Oct 20, 2023",
+      avatar: "https://i.pravatar.cc/150?u=a048581f4e29026701d",
     },
   ];
-  const formatUSD = (value: number) =>
-    new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 2,
-    }).format(value);
 
-  const formatKHR = (value: number) =>
-    new Intl.NumberFormat("en-US", {
-      minimumFractionDigits: 0,
-    }).format(value) + "៛";
+  interface Transaction {
+    id: number;
+    name: string;
+    category: string;
+    amountUsd: number;
+    amountRiel: number;
+    date: string;
+    avatar: string;
+  }
+
+  const renderCell = React.useCallback((transaction: Transaction, columnKey: React.Key) => {
+    const cellValue = transaction[columnKey as keyof Transaction];
+
+    switch (columnKey) {
+      case "expense":
+        return (
+          <User
+            avatarProps={{ radius: "lg", src: transaction.avatar }}
+            description={transaction.date}
+            name={cellValue}
+          >
+            {transaction.name}
+          </User>
+        );
+      case "category":
+        return (
+          <Chip className="capitalize" color="primary" size="sm" variant="flat">
+            {cellValue}
+          </Chip>
+        );
+      case "amountUsd":
+        return (
+          <span className="font-semibold text-black dark:text-white">
+            ${(cellValue as number).toFixed(2)}
+          </span>
+        );
+      case "amountRiel":
+        return (
+          <span className="text-gray-500">
+            {(cellValue as number).toLocaleString()} ៛
+          </span>
+        );
+      case "date":
+        return <span className="text-sm">{cellValue}</span>;
+      default:
+        return cellValue;
+    }
+  }, []);
 
   return (
-    <div>
-      <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
-        Recently
-      </h4>
-      <Table
-        aria-label="Example table with dynamic content"
+    <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-strokedark dark:bg-boxdark transition-colors duration-300">
+      <div className="mb-4 flex items-center justify-between">
+        <h4 className="text-xl font-semibold text-gray-800 dark:text-white">
+          Recent Transactions
+        </h4>
+      </div>
+      
+      <Table 
+        aria-label="Recent transactions table"
         classNames={{
-          base: "border border-gray-200 rounded-2xl shadow-sm overflow-hidden", // outer frame
-          table: "rounded-2xl overflow-hidden", // ensures rounding applies
-          th: "border-b border-gray-200 bg-gray-50 text-gray-700 font-medium px-4 py-2 text-left", // header style
-          td: "border-b border-gray-100 px-4 py-2 text-gray-600", // body cells
-          tr: "hover:bg-gray-50 transition-colors", // row hover effect
+          base: "max-h-[520px] overflow-scroll",
+          table: "min-w-[600px]",
+          th: "bg-transparent text-default-500 border-b border-divider",
         }}
-        bottomContent={
-          <div className="flex justify-center w-full p-4">
-            <TotalCard />
-          </div>
-        }
+        removeWrapper
       >
         <TableHeader columns={columns}>
           {(column) => (
-            <TableColumn key={column.key}>{column.label}</TableColumn>
+            <TableColumn key={column.uid} align={column.uid === "amountUsd" ? "end" : "start"}>
+              {column.name}
+            </TableColumn>
           )}
         </TableHeader>
-        <TableBody items={rows}>
-          {(item: any) => (
-            <TableRow key={item.key}>
-              {(columnKey) => (
-                <TableCell>
-                  {" "}
-                  {columnKey === "amountUS"
-                    ? formatUSD(item[columnKey])
-                    : columnKey === "amountRiel"
-                    ? formatKHR(item[columnKey])
-                    : item[columnKey]}
-                </TableCell>
-              )}
+        <TableBody items={transactions}>
+          {(item) => (
+            <TableRow key={item.id}>
+              {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
             </TableRow>
           )}
         </TableBody>
